@@ -7,27 +7,23 @@ from skimage.feature import hog
 from sklearn.utils import shuffle
 from keras.preprocessing.image import ImageDataGenerator
 
-#Tăng cường dữ liệu;
+#Augmentation;
 def augment_images(path_student):
     augmentor = alb.Compose([alb.HorizontalFlip(p=0.2),
-                            alb.HorizontalFlip(p=0.3),
-                            alb.HorizontalFlip(p=0.5), 
+                            alb.HorizontalFlip(p=0.3), 
                             alb.RandomBrightnessContrast(p=0.2),
                             alb.RandomGamma(p=0.2), 
                             alb.RGBShift(p=0.2),
-                            alb.RGBShift(p=0.5),
-                            alb.VerticalFlip(p=0.2),
-                            alb.VerticalFlip(p=0.3),
-                            alb.VerticalFlip(p=0.5)])
+                            alb.RGBShift(p=0.5)])
 
     for j in os.listdir(path_student):
         img_path = path_student + "/" + j
         img = cv.imread(img_path)
-        for x in range(20):
+        for x in range(10):
             aug = augmentor(image=img)
             cv.imwrite(img_path[:-4] + str(x) + ".jpg", aug["image"])
 
-#Tải ảnh từ các folder trong trong hai tập dữ liệu train và test;
+#Image loading;
 def load_images(path):
     dic = {}
     label = []
@@ -44,15 +40,13 @@ def load_images(path):
         dic[i] = lst
     return dic, label
 
-#Tiền xử lý ảnh;
+#Preprocessing images;
 def image_preprocessing(img):
     img = cv.GaussianBlur(img, (3, 3), 0)
-    # img = np.uint8(img)
-    # img = cv.Canny(img, 100, 150)
     fd = hog(img, orientations=9, pixels_per_cell=(8, 8), cells_per_block=(2, 2), block_norm='L2', feature_vector=True)
     return fd
 
-#Chuyển hình ảnh thành vector;
+#Image to vector;
 def image_to_vector(data, label):
     lst_data = []
     label_data = []
@@ -70,13 +64,13 @@ def image_to_vector(data, label):
     lst_data = shuffle(lst_data)
     return lst_data
 
-#Chia dữ liệu thành X và y;
+#Split dataset;
 def split_data(data):
     Y = data[:, -1]
     X = np.delete(data, -1, 1)
     return X, Y
 
-#Chuyển dữ liệu ảnh thành dữ liệu dạng bảng;
+#Dataset to data table;
 def creat_data_table(path_train, path_test):
 
     data_train, label_train = load_images(path_train)

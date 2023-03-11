@@ -1,8 +1,3 @@
-SE161235/Truong
-SE160891/Hoang Anh
-SE160885/tu kha
-SE170445/vinh
-SE161195/nghia dep trai
-SE162026/cong
-SE161207/vu
-SE170056/Ok Tao ten tho
+SE123456/Vo Dinh Phuc An
+SE123457/Vo Thi Nhan Ai
+SE161235/Vo Dinh Nhat Truong

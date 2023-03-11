@@ -50,7 +50,7 @@ def data_to_attendance(id):
     capture = cv.VideoCapture(0)
 
     lst_face = []
-    for i in range(40):
+    for i in range(10):
 
         isTrue, frame = capture.read()
         faces = face_detection.detectMultiScale(frame)

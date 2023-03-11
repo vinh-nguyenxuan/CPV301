@@ -3,11 +3,13 @@ import data
 import path
 import joblib
 import cv2 as cv
+import numpy as np
 from sklearn.svm import LinearSVC
+from sklearn.decomposition import PCA
 from sklearn.metrics import classification_report
 from sklearn.calibration import CalibratedClassifierCV
 
-#Gắn nhãn cho dữ liệu;
+#Data Lableing;
 def creat_label():
     res = {}
     final = {}
@@ -32,28 +34,36 @@ def creat_label():
 
     return final
 
-#Huấn luyện mô hình;
+#Training model;
 def training():
+    pca = PCA()
     X_train, y_train, X_test, y_test = data.creat_data_table(path.path_train, path.path_test)
     clf = LinearSVC(max_iter=100000)
-    clf = CalibratedClassifierCV(clf) 
+    clf = CalibratedClassifierCV(clf)
+    X_train = pca.fit_transform(X_train)
     clf.fit(X_train, y_train)
-    y_predict = clf.predict(X_test)
+    y_predict = clf.predict(pca.transform(X_test))
+    print("Performance Of The Model")
     print(classification_report(y_test, y_predict))
-    joblib.dump(clf, "D:/Assignment/file_and_data/file/model.npy")
+    joblib.dump(clf, "D:/myCode/CPV301/Assignment/file_and_data/file/model.npy")
 
-#Khởi chạy mô hình;
+#rRun model;
 def run():
     label = creat_label()
     face_detection = cv.CascadeClassifier(path.path_haar)
     capture = cv.VideoCapture(0)
     model = joblib.load(path.path_model)
-
+     
+    print(label)
     while True:
 
+        pca = PCA()
         isTrue, frame = capture.read()
-        faces = face_detection.detectMultiScale(frame)
         model = joblib.load(path.path_model)
+        faces = face_detection.detectMultiScale(frame)
+        X_train, y_train, X_test, y_test = data.creat_data_table(path.path_train, path.path_test)
+
+        x = pca.fit_transform(X_train)
 
         for (x, y, w, h) in faces:
             face = frame[y: h+y, x: w+x]
@@ -61,14 +71,10 @@ def run():
             face = cv.cvtColor(face, cv.COLOR_BGR2GRAY)
             face = data.image_preprocessing(face)
             face = [face]
-            y_predict_lst = model.predict_proba(face)
-            max_proba = y_predict_lst[0].max()
-            name = None
-            if max_proba >= 0.6:
-                label_index = list(y_predict_lst[0]).index(max_proba)
-                name = label[label_index]
-            else:
-                name = "Unknown"
+            face = pca.transform(face)
+            y_predict = model.predict(face)
+            print(y_predict, y_predict[0])
+            name = label[y_predict[0]]
 
             cv.putText(frame, name, (x, y), cv.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2, cv.LINE_AA)
             cv.rectangle(frame, (x, y), (x+w, y+h), (255, 0, 0), 2)
@@ -78,5 +84,5 @@ def run():
             break
 
 
-run()
+# run()
 # training()
