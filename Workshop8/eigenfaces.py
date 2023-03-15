@@ -14,9 +14,9 @@ RESIZE = (128, 128)
 labels = {"SE160885": 0, "SE160891": 1, "SE161235": 2, "SE170056": 3}
 
 #Path;
-data_train_path = "D:/myCode/CPV/Workshop8/data/train"
-data_test_path = "D:/myCode/CPV/Workshop8/data/test"
-model_path = "D:/myCode/CPV/Workshop8/model.npy"
+data_train_path = "D:/myCode/CPV301/Workshop8/data/test"
+data_test_path = "D:/myCode/CPV301/Workshop8/data/test"
+model_path = "D:/myCode/CPV301/Workshop8/model.npy"
 
 #Data Loading And Preprocessing;
 def load_img_path(folder_data_path):
@@ -107,5 +107,5 @@ def run(path):
     predict = int(model.predict(data_val))
 
     return predict
-
+training_model()
 
