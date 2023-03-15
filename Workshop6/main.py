@@ -8,7 +8,7 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QPlainTextEdit, QFileDial
 
 
 #Vui lòng copy đường dẫn của file interface vào đây;
-PATH = "D:/myCode/CPV/Workshop6/interface.ui"
+PATH = "D:/myCode/CPV301/Workshop6/interface.ui"
 
 class interface(QMainWindow):
     def __init__(self):
